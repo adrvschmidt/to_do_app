@@ -13,11 +13,13 @@ import br.com.schmidt.todoapp.data.models.ToDoData
 import br.com.schmidt.todoapp.data.viewmodel.ToDoViewModel
 import br.com.schmidt.todoapp.databinding.FragmentAddBinding
 import br.com.schmidt.todoapp.databinding.FragmentListBinding
+import br.com.schmidt.todoapp.fragments.ShareViewModel
 
 class AddFragment : Fragment() {
 
     private lateinit var binding: FragmentAddBinding
     private val mToDoViewModel: ToDoViewModel by viewModels()
+    private val mShareViewModel: ShareViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +28,7 @@ class AddFragment : Fragment() {
         binding = FragmentAddBinding.inflate(inflater, container, false)
         val view = binding.root
         setHasOptionsMenu(true)
+        binding.prioritiesSpinner.onItemSelectedListener = mShareViewModel.listener
         return view
     }
 
@@ -44,28 +47,13 @@ class AddFragment : Fragment() {
         val mTitle = binding.titleEt.text.toString()
         val mPriority = binding.prioritiesSpinner.selectedItem.toString()
         val mDescription = binding.descriptionEt.text.toString()
-        if(verifyDataFromUser(mTitle, mDescription)){
-            val newData = ToDoData(0, mTitle, parsePriority(mPriority), mDescription)
+        if(mShareViewModel.verifyDataFromUser(mTitle, mDescription)){
+            val newData = ToDoData(0, mTitle, mShareViewModel.parsePriority(mPriority), mDescription)
             mToDoViewModel.insertData(newData)
             Toast.makeText(requireContext(), "Adicionado com Sucesso", Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.action_addFragment_to_listFragment)
         } else {
             Toast.makeText(requireContext(), "Falha em criar nova tarefa", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun verifyDataFromUser(title: String, description: String): Boolean{
-        return if(TextUtils.isEmpty(title) || TextUtils.isEmpty(description)) {
-            false
-        } else !(title.isEmpty() || description.isEmpty())
-    }
-
-    private fun parsePriority(priority: String): Priority{
-        return when(priority){
-            "Prioridade Alta" -> {Priority.HIGH}
-            "Prioridade Média" -> {Priority.HIGH}
-            "Prioridade Baixa" -> {Priority.HIGH}
-            else -> Priority.LOW
         }
     }
 }
