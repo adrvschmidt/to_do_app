@@ -16,8 +16,8 @@ import br.com.schmidt.todoapp.databinding.FragmentListBinding
 import br.com.schmidt.todoapp.fragments.ShareViewModel
 import br.com.schmidt.todoapp.fragments.list.adapter.ListAdapter
 import br.com.schmidt.todoapp.utils.hideKeyboard
+import br.com.schmidt.todoapp.utils.observeOnce
 import com.google.android.material.snackbar.Snackbar
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 class ListFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -45,14 +45,13 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
     private fun setAdapterView() {
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        recyclerView.itemAnimator = SlideInUpAnimator().apply {
-            addDuration = 300
-        }
+        recyclerView.layoutManager = StaggeredGridLayoutManager(
+            2, StaggeredGridLayoutManager.VERTICAL)
 
         mToDoViewModel.getAllData.observe(viewLifecycleOwner, { data ->
             mShareViewModel.checkIfDatabaseEmpty(data)
             adapter.setData(data)
+            binding.recyclerView.scheduleLayoutAnimation()
         })
         swipeToDelete(recyclerView)
         hideKeyboard(requireActivity())
@@ -69,11 +68,15 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.menu_delete_all -> confirmDeleteAll()
-            R.id.menu_priority_high -> mToDoViewModel.sortByHighPriority.observe(this, {
+            R.id.menu_priority_high -> mToDoViewModel
+                .sortByHighPriority.observe(viewLifecycleOwner, {
                 adapter.setData(it)
+                    binding.recyclerView.scheduleLayoutAnimation()
             })
-            R.id.menu_priority_low -> mToDoViewModel.sortByLowPriority.observe(this, {
+            R.id.menu_priority_low -> mToDoViewModel
+                .sortByLowPriority.observe(viewLifecycleOwner, {
                 adapter.setData(it)
+                    binding.recyclerView.scheduleLayoutAnimation()
             })
         }
         return super.onOptionsItemSelected(item)
@@ -137,9 +140,10 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun searchThroughDatabase(query: String) {
-        mToDoViewModel.searchDatabase("%$query%").observe(this, { data ->
+        mToDoViewModel.searchDatabase("%$query%").observeOnce(viewLifecycleOwner, { data ->
             data?.let {
                 adapter.setData(it)
+                binding.recyclerView.scheduleLayoutAnimation()
             }
         })
     }
