@@ -3,10 +3,11 @@ package br.com.schmidt.todoapp.fragments.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import br.com.schmidt.todoapp.CardViewClick
 import br.com.schmidt.todoapp.R
 import br.com.schmidt.todoapp.data.models.ToDoData
 
-class ListAdapter : RecyclerView.Adapter<MyViewHolder>() {
+class ListAdapter(private val listener: CardViewClick) : RecyclerView.Adapter<MyViewHolder>() {
 
     var dataList = emptyList<ToDoData>()
 
@@ -19,6 +20,9 @@ class ListAdapter : RecyclerView.Adapter<MyViewHolder>() {
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(dataList[position])
+        holder.itemView.setOnClickListener {
+            listener.onClickCardView(dataList[position])
+        }
     }
 
     override fun getItemCount(): Int {

@@ -28,6 +28,5 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 ContextCompat.getColor(itemView.context, R.color.red)
             )
         }
-        // titleText.text = toDoData.title
     }
 }
