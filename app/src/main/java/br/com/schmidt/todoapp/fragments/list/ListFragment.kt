@@ -3,7 +3,9 @@ package br.com.schmidt.todoapp.fragments.list
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
+
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -16,8 +18,9 @@ import br.com.schmidt.todoapp.databinding.FragmentListBinding
 import br.com.schmidt.todoapp.fragments.ShareViewModel
 import br.com.schmidt.todoapp.fragments.list.adapter.ListAdapter
 import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
-class ListFragment : Fragment() {
+class ListFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListBinding? = null
     private val adapter: ListAdapter by lazy { ListAdapter() }
@@ -44,6 +47,9 @@ class ListFragment : Fragment() {
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        recyclerView.itemAnimator = SlideInUpAnimator().apply {
+            addDuration = 300
+        }
 
         mToDoViewModel.getAllData.observe(viewLifecycleOwner, { data ->
             mShareViewModel.checkIfDatabaseEmpty(data)
@@ -54,6 +60,10 @@ class ListFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.list_fragment_menu, menu)
+        val search = menu.findItem(R.id.menu_search)
+        val searchView = search.actionView as? SearchView
+        searchView?.isSubmitButtonEnabled = true
+        searchView?.setOnQueryTextListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -111,5 +121,27 @@ class ListFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
         snackbar.show()
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query != null) {
+            searchThroughDatabase(query)
+        }
+        return true
+    }
+
+    private fun searchThroughDatabase(query: String) {
+        mToDoViewModel.searchDatabase("%$query%").observe(this, { data ->
+            data?.let {
+                adapter.setData(it)
+            }
+        })
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        if (query != null) {
+            searchThroughDatabase(query)
+        }
+        return true
     }
 }
