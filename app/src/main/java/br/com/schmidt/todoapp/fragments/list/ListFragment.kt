@@ -15,6 +15,7 @@ import br.com.schmidt.todoapp.data.viewmodel.ToDoViewModel
 import br.com.schmidt.todoapp.databinding.FragmentListBinding
 import br.com.schmidt.todoapp.fragments.ShareViewModel
 import br.com.schmidt.todoapp.fragments.list.adapter.ListAdapter
+import br.com.schmidt.todoapp.utils.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
@@ -54,6 +55,7 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
             adapter.setData(data)
         })
         swipeToDelete(recyclerView)
+        hideKeyboard(requireActivity())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
