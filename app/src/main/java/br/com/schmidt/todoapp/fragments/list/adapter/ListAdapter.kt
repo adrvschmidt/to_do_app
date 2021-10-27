@@ -1,12 +1,8 @@
-package br.com.schmidt.todoapp.fragments.list
+package br.com.schmidt.todoapp.fragments.list.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import br.com.schmidt.todoapp.CardViewClick
-import br.com.schmidt.todoapp.R
 import br.com.schmidt.todoapp.data.models.ToDoData
-import br.com.schmidt.todoapp.databinding.RowLayoutBinding
 
 class ListAdapter() : RecyclerView.Adapter<MyViewHolder>() {
 

@@ -2,20 +2,18 @@ package br.com.schmidt.todoapp.fragments.list
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import br.com.schmidt.todoapp.CardViewClick
+import androidx.recyclerview.widget.RecyclerView
 import br.com.schmidt.todoapp.R
-import br.com.schmidt.todoapp.data.models.ToDoData
 import br.com.schmidt.todoapp.data.viewmodel.ToDoViewModel
 import br.com.schmidt.todoapp.databinding.FragmentListBinding
 import br.com.schmidt.todoapp.fragments.ShareViewModel
+import br.com.schmidt.todoapp.fragments.list.adapter.ListAdapter
 
 class ListFragment : Fragment() {
 
@@ -49,6 +47,7 @@ class ListFragment : Fragment() {
             mShareViewModel.checkIfDatabaseEmpty(data)
             adapter.setData(data)
         })
+        swipeToDelete(recyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,5 +84,21 @@ class ListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun swipeToDelete(recyclerView: RecyclerView){
+        val swipeToDeleteCallback = object : SwipeToDelete(){
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val itemToDelete = adapter.dataList[viewHolder.adapterPosition]
+                mToDoViewModel.deleteItem(itemToDelete)
+                Toast.makeText(
+                    requireContext(),
+                    "Apagado tarefa '${itemToDelete.title}' com sucesso",
+                    Toast.LENGTH_LONG).show()
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 }

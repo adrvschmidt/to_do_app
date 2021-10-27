@@ -1,15 +1,8 @@
-package br.com.schmidt.todoapp.fragments.list
+package br.com.schmidt.todoapp.fragments.list.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
-import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import br.com.schmidt.todoapp.R
-import br.com.schmidt.todoapp.data.models.Priority
 import br.com.schmidt.todoapp.data.models.ToDoData
 import br.com.schmidt.todoapp.databinding.RowLayoutBinding
 
@@ -37,7 +30,7 @@ class MyViewHolder(private val binding: RowLayoutBinding) : RecyclerView.ViewHol
     }
 
     companion object{
-        fun from(parent: ViewGroup): MyViewHolder{
+        fun from(parent: ViewGroup): MyViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = RowLayoutBinding.inflate(layoutInflater, parent, false)
             return MyViewHolder(binding)
