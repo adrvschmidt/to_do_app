@@ -7,26 +7,10 @@ import br.com.schmidt.todoapp.data.models.ToDoData
 import br.com.schmidt.todoapp.databinding.RowLayoutBinding
 
 class MyViewHolder(private val binding: RowLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-  //  private val titleText: TextView = itemView.findViewById(R.id.title_txt)
- //   private val descriptionText: TextView = itemView.findViewById(R.id.description_txt)
-  //  private val priority: CardView = itemView.findViewById(R.id.priority_indicator)
 
     fun bind(toDoData: ToDoData) {
         binding.toDoData = toDoData
         binding.executePendingBindings()
-        /*titleText.text = toDoData.title
-        descriptionText.text = toDoData.description
-        when (toDoData.priority) {
-            Priority.LOW -> priority.setCardBackgroundColor(
-                ContextCompat.getColor(itemView.context, R.color.green)
-            )
-            Priority.MEDIUM -> priority.setCardBackgroundColor(
-                ContextCompat.getColor(itemView.context, R.color.yellow)
-            )
-            Priority.HIGH -> priority.setCardBackgroundColor(
-                ContextCompat.getColor(itemView.context, R.color.red)
-            )
-        }*/
     }
 
     companion object{

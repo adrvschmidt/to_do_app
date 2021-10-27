@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import br.com.schmidt.todoapp.R
+import br.com.schmidt.todoapp.data.models.ToDoData
 import br.com.schmidt.todoapp.data.viewmodel.ToDoViewModel
 import br.com.schmidt.todoapp.databinding.FragmentListBinding
 import br.com.schmidt.todoapp.fragments.ShareViewModel
 import br.com.schmidt.todoapp.fragments.list.adapter.ListAdapter
+import com.google.android.material.snackbar.Snackbar
 
 class ListFragment : Fragment() {
 
@@ -54,11 +56,6 @@ class ListFragment : Fragment() {
         inflater.inflate(R.menu.list_fragment_menu, menu)
     }
 
-/*    override fun onClickCardView(toDoData: ToDoData) {
-        val action = ListFragmentDirections.actionListFragmentToUpdateFragment(toDoData)
-        findNavController().navigate(action)
-    }*/
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.menu_delete_all){
             confirmDeleteAll()
@@ -91,14 +88,28 @@ class ListFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val itemToDelete = adapter.dataList[viewHolder.adapterPosition]
                 mToDoViewModel.deleteItem(itemToDelete)
+                adapter.notifyItemRemoved(viewHolder.adapterPosition)
                 Toast.makeText(
                     requireContext(),
                     "Apagado tarefa '${itemToDelete.title}' com sucesso",
                     Toast.LENGTH_LONG).show()
+                restoreDeletedData(viewHolder.itemView, itemToDelete, viewHolder.adapterPosition)
             }
         }
 
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private fun restoreDeletedData(view: View, deletedItem: ToDoData, position: Int){
+        val snackbar = Snackbar.make(
+            view, "Deleted '${deletedItem.title}'",
+            Snackbar.LENGTH_LONG
+        )
+        snackbar.setAction("Desfazer"){
+            mToDoViewModel.insertData(deletedItem)
+            adapter.notifyDataSetChanged()
+        }
+        snackbar.show()
     }
 }
