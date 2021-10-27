@@ -50,14 +50,6 @@ class ShareViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun parsePriorityToInt(priority: Priority): Int{
-        return when(priority){
-            Priority.HIGH -> 0
-            Priority.LOW -> 2
-            Priority.MEDIUM -> 1
-        }
-    }
-
     fun checkIfDatabaseEmpty(toDoData: List<ToDoData>){
         emptyDatabase.value = toDoData.isEmpty()
     }

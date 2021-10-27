@@ -6,23 +6,18 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.schmidt.todoapp.CardViewClick
 import br.com.schmidt.todoapp.R
 import br.com.schmidt.todoapp.data.models.ToDoData
+import br.com.schmidt.todoapp.databinding.RowLayoutBinding
 
-class ListAdapter(private val listener: CardViewClick) : RecyclerView.Adapter<MyViewHolder>() {
+class ListAdapter() : RecyclerView.Adapter<MyViewHolder>() {
 
     var dataList = emptyList<ToDoData>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.row_layout, parent, false)
-        )
+        return MyViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(dataList[position])
-        holder.itemView.setOnClickListener {
-            listener.onClickCardView(dataList[position])
-        }
     }
 
     override fun getItemCount(): Int {

@@ -17,7 +17,8 @@ import br.com.schmidt.todoapp.fragments.ShareViewModel
 
 class AddFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddBinding
+    private var _binding: FragmentAddBinding? = null
+    private val binding get() = _binding!!
     private val mToDoViewModel: ToDoViewModel by viewModels()
     private val mShareViewModel: ShareViewModel by viewModels()
 
@@ -25,7 +26,8 @@ class AddFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAddBinding.inflate(inflater, container, false)
+        _binding = FragmentAddBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
         val view = binding.root
         setHasOptionsMenu(true)
         binding.prioritiesSpinner.onItemSelectedListener = mShareViewModel.listener
@@ -55,5 +57,10 @@ class AddFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Falha em criar nova tarefa", Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

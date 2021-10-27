@@ -20,8 +20,9 @@ import br.com.schmidt.todoapp.fragments.ShareViewModel
 
 class UpdateFragment : Fragment() {
 
-    private lateinit var binding: FragmentUpdateBinding
-    private val args by navArgs<UpdateFragmentArgs>()
+    private var _binding: FragmentUpdateBinding? = null
+    private val binding get() = _binding!!
+    val args by navArgs<UpdateFragmentArgs>()
     private val mShareViewModel: ShareViewModel by viewModels()
     private val mToDoViewModel: ToDoViewModel by viewModels()
 
@@ -29,12 +30,11 @@ class UpdateFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentUpdateBinding.inflate(inflater, container, false)
+        _binding = FragmentUpdateBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.args = args
         setHasOptionsMenu(true)
 
-        binding.currentTitleEt.setText(args.currentItem.title, TextView.BufferType.EDITABLE)
-        binding.currentDescriptionEt.setText(args.currentItem.description, TextView.BufferType.EDITABLE)
-        binding.currentPrioritiesSpinner.setSelection(mShareViewModel.parsePriorityToInt(args.currentItem.priority))
         binding.currentPrioritiesSpinner.onItemSelectedListener = mShareViewModel.listener
         return binding.root
     }
@@ -85,5 +85,10 @@ class UpdateFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Falha na atualização", Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
