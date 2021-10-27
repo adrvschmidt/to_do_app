@@ -14,7 +14,7 @@ import br.com.schmidt.todoapp.data.models.ToDoData
 
 class ShareViewModel(application: Application): AndroidViewModel(application) {
 
-    val emptyDatabase: MutableLiveData<Boolean> = MutableLiveData(true)
+    val emptyDatabase: MutableLiveData<Boolean> = MutableLiveData(false)
     val listener: AdapterView.OnItemSelectedListener = object
         : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
