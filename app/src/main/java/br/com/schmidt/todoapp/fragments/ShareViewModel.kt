@@ -43,9 +43,9 @@ class ShareViewModel(application: Application): AndroidViewModel(application) {
             "Prioridade Alta" -> {
                 Priority.HIGH}
             "Prioridade Média" -> {
-                Priority.HIGH}
+                Priority.MEDIUM}
             "Prioridade Baixa" -> {
-                Priority.HIGH}
+                Priority.LOW}
             else -> Priority.LOW
         }
     }
